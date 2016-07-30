@@ -61,3 +61,12 @@ android下一个基于OkHttp与Gson还有一个第三方Cookie库封装的网络
                 Log.e("MainActivity", result.toString());
             }
         }, null);
+        
+        最后一个参数是一个对话框（等待框），需要在每次请求时显示一个等待对话框可以使用如下方式，具体对话框的样式可以自己定义，只要是从Dialog派生的都可以。请求库会自动打开与关闭等待对话框。
+        // 发送GET请求
+        Http.getInstance().GET("http://www.baidu.com", new RequestCallBack<UserEntity>() {
+            @Override
+            public void onSuccess(UserEntity result) {
+                Log.e("MainActivity", result.toString());
+            }
+        }, new ProgressDialog(MainActivity.this));
