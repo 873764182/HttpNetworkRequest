@@ -2,9 +2,11 @@
 一个基于OkHttp与Gson还有一个第三方Cookie库封装的网络请求库
 
 
-// 打开Cookie支持 （不需要Cookie可以不调用）
-        Http.getInstance().openCookie(this);
+使用时直接导入httpLibrary即可
 
+        // 打开Cookie支持 （不需要Cookie可以不调用）
+        Http.getInstance().openCookie(this);
+        
         // 发送GET请求
         Http.getInstance().GET("http://www.baidu.com", new RequestCallBack<String>() {
             @Override
