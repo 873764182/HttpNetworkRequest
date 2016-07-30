@@ -51,8 +51,6 @@ android下一个基于OkHttp与Gson还有一个第三方Cookie库封装的网络
             }
         });
         
-        
-        
         如果需要直接返回对象可以使用如下方式,UserEntity是一个普通实体，需要服务端返回的json数据格式与UserEntity对应。
         // 发送GET请求
         Http.getInstance().GET("http://www.baidu.com", new RequestCallBack<UserEntity>() {
@@ -70,3 +68,5 @@ android下一个基于OkHttp与Gson还有一个第三方Cookie库封装的网络
                 Log.e("MainActivity", result.toString());
             }
         }, new ProgressDialog(MainActivity.this));
+        
+        代码中都有详细注释，需要自己定义可以直接修改代码。
