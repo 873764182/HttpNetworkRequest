@@ -221,6 +221,7 @@ public class DownUtil {
                         });
                     }
                 }
+                // updateDownTask(context, this);  // 更新下载进度到持久化 实现断点下载
                 currentPart.close();
                 inputStream.close();
                 if (canDown) {
