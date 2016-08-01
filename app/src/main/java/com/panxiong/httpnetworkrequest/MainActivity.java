@@ -100,11 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         // 上传文件 支持多文件一起上传
-        Http.getInstance().UPLOAD(url, params, new String[]{"文件名.jpg"}, new File[]{null}, new RequestCallBack<String>() {
-            @Override
-            public void onSuccess(String result) {
-
-            }
-        });
+//        Http.getInstance().UPLOAD(url, params, new String[]{"文件名.jpg"}, new File[]{null}, new RequestCallBack<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//
+//            }
+//        });
     }
 }

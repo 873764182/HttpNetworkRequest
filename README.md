@@ -4,7 +4,7 @@ android下一个基于OkHttp与Gson还有一个第三方Cookie库封装的网络
 
 使用时用androidstudio直接导入httpLibrary即可，当然也可以将源码生成jar导入项目，因为项目中没有使用到任何android资源文件。
 
-        // 打开Cookie支持 （不需要Cookie可以不调用）
+        // 打开Cookie支持 （不需要Cookie可以不调用，如需要Cookie支持推荐在Application的onCreate中调用。）
         Http.getInstance().openCookie(this);
         
         // 发送GET请求
