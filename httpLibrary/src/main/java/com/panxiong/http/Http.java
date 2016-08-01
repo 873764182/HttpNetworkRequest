@@ -309,8 +309,7 @@ public class Http {
      */
     public final void GET(
             String url, RequestCallBack requestCallBack, Dialog dialog) {
-        Call call = getCall(url, null);
-        call.enqueue(getCallback(dialog, requestCallBack));
+        getCall(url, null).enqueue(getCallback(dialog, requestCallBack));
     }
 
     /**
@@ -318,8 +317,7 @@ public class Http {
      */
     public final void POST(
             String url, Map<String, String> params, RequestCallBack requestCallBack, Dialog dialog) {
-        Call call = getCall(url, params);
-        call.enqueue(getCallback(dialog, requestCallBack));
+        getCall(url, params).enqueue(getCallback(dialog, requestCallBack));
     }
 
     /**
@@ -327,8 +325,7 @@ public class Http {
      */
     public final void POST(
             String url, List<ParamEntity> params, RequestCallBack requestCallBack, Dialog dialog) {
-        Call call = getCall(url, params);
-        call.enqueue(getCallback(dialog, requestCallBack));
+        getCall(url, params).enqueue(getCallback(dialog, requestCallBack));
     }
 
     /**
@@ -336,12 +333,11 @@ public class Http {
      */
     public final void JSON(
             @NonNull String url, @NonNull String json, RequestCallBack requestCallBack, Dialog dialog) {
-        Call call = okHttpClient.newCall(new Request.Builder()
+        okHttpClient.newCall(new Request.Builder()
                 .url(url.replaceAll("\\s+", ""))
                 .tag(TAG)
                 .post(RequestBody.create(MediaType.parse("application/json; charset=UTF-8"), json))
-                .build());
-        call.enqueue(getCallback(dialog, requestCallBack));
+                .build()).enqueue(getCallback(dialog, requestCallBack));
     }
 
     /**
@@ -384,13 +380,12 @@ public class Http {
                 }
             }
         });
-        Call call = okHttpClient.newCall(new Request.Builder()
+        okHttpClient.newCall(new Request.Builder()
                 .tag(TAG)
                 .url(url.replaceAll("\\s+", ""))
                 .post(uploadEntity)
                 .build()
-        );
-        call.enqueue(getCallback(null, requestCallBack));   /*发起请求*/
+        ).enqueue(getCallback(null, requestCallBack));   /*发起请求*/
     }
 
     /**
@@ -403,8 +398,7 @@ public class Http {
         final long[] fileSize = {0};    // 文件大小
         final long[] downSize = {0};    // 下载进度
 
-        final Call call = getCall(url, null);
-        call.enqueue(new Callback() {
+        getCall(url, null).enqueue(new Callback() {
 
             @Override
             public void onFailure(final Call call, final IOException e) {
@@ -503,7 +497,7 @@ public class Http {
             dialog.show();
         }
         /*添加下载拦截*/
-        final Interceptor downProgressInterceptor = DownloadEntity.getDownProgressInterceptor(new DownloadProgressCallback() {
+        Interceptor downProgressInterceptor = DownloadEntity.getDownProgressInterceptor(new DownloadProgressCallback() {
             @Override
             public void onDownProgress(final Long progress, final Long contentLength, final Boolean complete, final Integer percentage) {
                 if (requestCallBack != null) {
@@ -524,54 +518,55 @@ public class Http {
                 }
             }
         });
-        final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(downProgressInterceptor).build(); // 构建客户端且添加拦截器
-        final Call call = client.newCall(new Request.Builder().url(url).build());
-        call.enqueue(new Callback() {
+        // 构建客户端且添加拦截器
+        new OkHttpClient.Builder().addInterceptor(downProgressInterceptor).build()
+                .newCall(new Request.Builder().url(url).build())
+                .enqueue(new Callback() {
 
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                runOnUi(new Runnable() {
                     @Override
-                    public void run() {
-                        if (dialog != null) dialog.cancel();
-                        if (requestCallBack != null) requestCallBack.onClientError(call, e);
+                    public void onFailure(final Call call, final IOException e) {
+                        runOnUi(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (dialog != null) dialog.cancel();
+                                if (requestCallBack != null) requestCallBack.onClientError(call, e);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            InputStream inputStream = null;
+                            FileOutputStream outputStream = null;
+                            try {
+                                outputStream = new FileOutputStream(path);
+                                inputStream = response.body().byteStream();
+                                byte[] buffer = new byte[1024];
+                                int hasRead = 0;
+                                while ((hasRead = inputStream.read(buffer)) != -1) {
+                                    outputStream.write(buffer, 0, hasRead);
+                                }
+                                outputStream.flush();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (outputStream != null) {
+                                    outputStream.close();
+                                }
+                                if (inputStream != null) {
+                                    inputStream.close();
+                                }
+                            }
+                            response.body().close();
+                        } else {
+                            if (requestCallBack != null)
+                                requestCallBack.onServiceError(call, response); // 提示错误
+                        }
+                        if (dialog != null) {
+                            dialog.cancel();
+                        }
                     }
                 });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    InputStream inputStream = null;
-                    FileOutputStream outputStream = null;
-                    try {
-                        outputStream = new FileOutputStream(path);
-                        inputStream = response.body().byteStream();
-                        byte[] buffer = new byte[1024];
-                        int hasRead = 0;
-                        while ((hasRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, hasRead);
-                        }
-                        outputStream.flush();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (outputStream != null) {
-                            outputStream.close();
-                        }
-                        if (inputStream != null) {
-                            inputStream.close();
-                        }
-                    }
-                    response.body().close();
-                } else {
-                    if (requestCallBack != null)
-                        requestCallBack.onServiceError(call, response); // 提示错误
-                }
-                if (dialog != null) {
-                    dialog.cancel();
-                }
-            }
-        });
     }
 }
