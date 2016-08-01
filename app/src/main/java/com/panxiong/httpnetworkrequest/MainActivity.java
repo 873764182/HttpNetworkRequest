@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.panxiong.down.Down;
 import com.panxiong.down.callback.DownCallBack;
@@ -105,13 +106,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (taskEntity != null) taskEntity.closeDown(false);    // 不清除任务
+                        Toast.makeText(MainActivity.this, "暂停下载", Toast.LENGTH_LONG).show();
                     }
                 });
                 dialog.show();
 
                 taskEntity = Down.breakpointDownload(MainActivity.this,
                         DOWN_URL,
-                        Environment.getExternalStorageDirectory().getPath() + "/qqlite_3.5.0.660.jpg",
+                        Environment.getExternalStorageDirectory().getPath() + "/qqlite_3.5.0.660.apk",
                         new ProgressCallback() {
                             @Override
                             public void onDownProgress(Long progress, Long contentLength, Boolean complete, Integer percentage) {
@@ -128,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         mButton6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (taskEntity != null) taskEntity.closeDown(false);    // 不清除任务
+
             }
         });
 

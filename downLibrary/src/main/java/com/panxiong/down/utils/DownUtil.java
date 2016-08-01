@@ -6,7 +6,6 @@ import android.os.Looper;
 
 import com.panxiong.down.callback.ProgressCallback;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
@@ -194,13 +193,6 @@ public class DownUtil {
                 fileSize = conn.getContentLength(); // 得到要下载文件的大小
                 conn.disconnect();
                 if (fileSize <= 0) throw new RuntimeException("Failed to get the file size!");
-                File tempFile = new File(savePath);
-                if (tempFile.exists() || tempFile.isFile()) {
-                    tempFile.delete();  // 如果源文件存在 先删除
-                }
-                RandomAccessFile file = new RandomAccessFile(savePath, "rw"); // 获取具有读写的功能的文件随机存储对象
-                file.setLength(fileSize);   // 创建一个与下载文件一样大的空文件
-                file.close();
                 // 调用下载方法
                 download();
             } catch (Exception e) {
@@ -218,7 +210,6 @@ public class DownUtil {
                 while (canDown && (hasRead = inputStream.read(buffer)) != -1) {
                     currentPart.write(buffer, 0, hasRead);
                     downSize += hasRead;
-                    updateDownTask(context, this);  // 更新下载进度到持久化 实现断点下载
 
                     if (progressCallback != null) {
                         handler.post(new Runnable() {
@@ -232,10 +223,10 @@ public class DownUtil {
                 }
                 currentPart.close();
                 inputStream.close();
-                conn.disconnect();
                 if (canDown) {
                     removeDownTask(context, this);  // 下载结束删除掉任务 手动暂定状态下不取消任务
                 }
+                conn.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -248,6 +239,8 @@ public class DownUtil {
             canDown = false;
             if (removeTask) {
                 removeDownTask(context, this);  // 删除断点任务
+            } else {
+                updateDownTask(context, this);  // 更新下载进度到持久化 实现断点下载
             }
         }
 

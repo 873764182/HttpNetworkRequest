@@ -16,13 +16,17 @@ import java.util.Map;
  * 网络改变监听
  */
 public class ConnectChangeReceiver extends BroadcastReceiver {
-    
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (netConn(context)) {
             for (Map.Entry<String, DownUtil.TaskEntity> entry : DownUtil.taskMap.entrySet()) {
                 entry.getValue().closeDown(false);
                 entry.getValue().download();
+            }
+        } else {
+            for (Map.Entry<String, DownUtil.TaskEntity> entry : DownUtil.taskMap.entrySet()) {
+                entry.getValue().closeDown(false);
             }
         }
     }
