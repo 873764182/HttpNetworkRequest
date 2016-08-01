@@ -8,4 +8,9 @@ package com.panxiong.http.entity;
 public class ParamEntity {
     public String key = "";
     public String value = "";
+
+    public ParamEntity(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 }

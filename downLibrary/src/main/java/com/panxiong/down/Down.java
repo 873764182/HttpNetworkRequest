@@ -8,7 +8,10 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.panxiong.down.callback.DownCallBack;
+import com.panxiong.down.callback.ProgressCallback;
+import com.panxiong.down.receiver.ConnectChangeReceiver;
 import com.panxiong.down.receiver.DownCompleteReceiver;
+import com.panxiong.down.utils.DownUtil;
 import com.panxiong.down.utils.StringUtil;
 
 import java.io.File;
@@ -21,7 +24,7 @@ import java.util.Map;
 
 /**
  * Created by Administrator on 2016/8/1.
- * <p/>
+ * <p>
  * 下载管理对象
  */
 public class Down {
@@ -71,6 +74,17 @@ public class Down {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 断点下载
+     */
+    public static DownUtil.TaskEntity breakpointDownload(
+            Context context, String downUrl, String savePath, ProgressCallback progressCallback) {
+        DownUtil.TaskEntity taskEntity =
+                new DownUtil.TaskEntity(context, downUrl, savePath, progressCallback);
+        taskEntity.start();
+        return taskEntity;
     }
 
     /**
