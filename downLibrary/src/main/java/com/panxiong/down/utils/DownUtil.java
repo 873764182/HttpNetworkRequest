@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * Created by Administrator on 2016/8/1.
- * <p>
+ * <p/>
  * 断点续传工具对象
  */
 public class DownUtil {
@@ -205,7 +205,7 @@ public class DownUtil {
                 HttpURLConnection conn = getConnection(downUrl);
                 conn.setRequestProperty("Range", "bytes=" + downSize + "-" + fileSize); // 读取范围
                 InputStream inputStream = conn.getInputStream();
-                byte[] buffer = new byte[1024]; // 缓存设置大点可以减少硬盘的读写次数
+                byte[] buffer = new byte[1024]; // 缓存设置大点可以减少硬盘的读写与回调次数次数
                 int hasRead = 0;
                 while (canDown && (hasRead = inputStream.read(buffer)) != -1) {
                     currentPart.write(buffer, 0, hasRead);
@@ -221,14 +221,15 @@ public class DownUtil {
                         });
                     }
                 }
-                // updateDownTask(context, this);  // 更新下载进度到持久化 实现断点下载
                 currentPart.close();
                 inputStream.close();
-                if (canDown) {
+                if (canDown)
                     removeDownTask(context, this);  // 下载结束删除掉任务 手动暂定状态下不取消任务
-                }
+                else
+                    updateDownTask(context, this);  // 暂停状态下 更新下载进度到持久化 实现断点下载
                 conn.disconnect();
             } catch (Exception e) {
+                updateDownTask(context, this);  // 异常状态下 更新下载进度到持久化 实现断点下载
                 e.printStackTrace();
             }
         }
@@ -238,11 +239,7 @@ public class DownUtil {
          */
         public void closeDown(boolean removeTask) {
             canDown = false;
-            if (removeTask) {
-                removeDownTask(context, this);  // 删除断点任务
-            } else {
-                updateDownTask(context, this);  // 更新下载进度到持久化 实现断点下载
-            }
+            if (removeTask) removeDownTask(context, this);  // 删除断点任务
         }
 
     }
