@@ -2,10 +2,10 @@
 android下一个基于OkHttp与Gson还有一个第三方Cookie库封装的网络请求库，为项目提供快速网络访问支持。
 
 
-使用时用androidstudio直接导入httpLibrary即可，当然也可以将源码生成jar导入项目，因为项目中没有使用到任何android资源文件。
+使用时用androidstudio直接导入httpLibrary即可(如果不需要修改源码,可以直接导入httpLibrary/pixel-http.jar与httpLibrary/libs下的三个jar包即可)
 
         // 打开Cookie支持 （不需要Cookie可以不调用，如需要Cookie支持推荐在Application的onCreate中调用。）
-        Http.getInstance().openCookie(this);
+        Http.getInstance().openCookie(this.getApplicationContext());
         
         // 发送GET请求
         Http.getInstance().GET("http://www.baidu.com", new RequestCallBack<String>() {
