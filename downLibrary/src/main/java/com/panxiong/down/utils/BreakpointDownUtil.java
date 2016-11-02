@@ -21,7 +21,7 @@ import java.util.Map;
  * <p/>
  * 断点续传工具对象
  */
-public class DownUtil {
+public class BreakpointDownUtil {
     public static final String LIST_NAME = "DOWN_TASK_LIST";
     public static final Map<String, TaskEntity> taskMap = new HashMap<>();  // 网络变化时给外部调用
 
@@ -205,7 +205,7 @@ public class DownUtil {
                 HttpURLConnection conn = getConnection(downUrl);
                 conn.setRequestProperty("Range", "bytes=" + downSize + "-" + fileSize); // 读取范围
                 InputStream inputStream = conn.getInputStream();
-                byte[] buffer = new byte[1024]; // 缓存设置大点可以减少硬盘的读写与回调次数次数
+                byte[] buffer = new byte[4096]; // 缓存设置大点可以减少硬盘的读写与回调次数次数
                 int hasRead = 0;
                 while (canDown && (hasRead = inputStream.read(buffer)) != -1) {
                     currentPart.write(buffer, 0, hasRead);

@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.panxiong.down.Down;
 import com.panxiong.down.callback.DownCallBack;
 import com.panxiong.down.callback.ProgressCallback;
-import com.panxiong.down.utils.DownUtil;
+import com.panxiong.down.utils.BreakpointDownUtil;
 import com.panxiong.http.Http;
 import com.panxiong.http.callback.RequestCallBack;
 
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mButton5;
     private Button mButton6;
 
-    private volatile DownUtil.TaskEntity taskEntity = null;
+    private volatile BreakpointDownUtil.TaskEntity taskEntity = null;
 
     private String DOWN_URL = "http://sqdd.myapp.com/myapp/qqteam/Androidlite/qqlite_3.5.0.660_android_r108360_GuanWang_537047121_release_10000484.apk";
 

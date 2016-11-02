@@ -9,7 +9,7 @@ import android.net.Uri;
 import com.panxiong.down.callback.DownCallBack;
 import com.panxiong.down.callback.ProgressCallback;
 import com.panxiong.down.receiver.DownCompleteReceiver;
-import com.panxiong.down.utils.DownUtil;
+import com.panxiong.down.utils.BreakpointDownUtil;
 import com.panxiong.down.utils.MultiDownUtil;
 import com.panxiong.down.utils.StringUtil;
 
@@ -73,10 +73,8 @@ public class Down {
     /**
      * 断点下载
      */
-    public static DownUtil.TaskEntity breakpointDownload(
-            Context context, String downUrl, String savePath, ProgressCallback progressCallback) {
-        DownUtil.TaskEntity taskEntity =
-                new DownUtil.TaskEntity(context, downUrl, savePath, progressCallback);
+    public static BreakpointDownUtil.TaskEntity breakpointDownload(Context context, String downUrl, String savePath, ProgressCallback progressCallback) {
+        BreakpointDownUtil.TaskEntity taskEntity = new BreakpointDownUtil.TaskEntity(context, downUrl, savePath, progressCallback);
         taskEntity.start();
         return taskEntity;
     }
@@ -84,8 +82,7 @@ public class Down {
     /**
      * 多线程下载
      */
-    public static MultiDownUtil multiDownload(
-            String downUrl, String savePath, int threadNum, ProgressCallback progressCallback) {
+    public static MultiDownUtil multiDownload(String downUrl, String savePath, int threadNum, ProgressCallback progressCallback) {
         MultiDownUtil multiDownUtil = new MultiDownUtil(downUrl, savePath, threadNum, progressCallback);
         multiDownUtil.startDownload();
         return multiDownUtil;

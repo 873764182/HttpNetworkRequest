@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.panxiong.down.utils.DownUtil;
+import com.panxiong.down.utils.BreakpointDownUtil;
 
 import java.util.Map;
 
@@ -20,12 +20,12 @@ public class ConnectChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (netConn(context)) {
-            for (Map.Entry<String, DownUtil.TaskEntity> entry : DownUtil.taskMap.entrySet()) {
+            for (Map.Entry<String, BreakpointDownUtil.TaskEntity> entry : BreakpointDownUtil.taskMap.entrySet()) {
                 entry.getValue().closeDown(false);
                 entry.getValue().download();
             }
         } else {
-            for (Map.Entry<String, DownUtil.TaskEntity> entry : DownUtil.taskMap.entrySet()) {
+            for (Map.Entry<String, BreakpointDownUtil.TaskEntity> entry : BreakpointDownUtil.taskMap.entrySet()) {
                 entry.getValue().closeDown(false);
             }
         }
