@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mButton5 = (Button) findViewById(R.id.button5);
         mButton6 = (Button) findViewById(R.id.button6);
 
-        Http.getInstance().openCookie(this);    // 打开Cookie支持
+        Http.getInstance().openCookie(getApplicationContext());    // 打开Cookie支持
 
         mButton1.setOnClickListener(new View.OnClickListener() {
             @Override
