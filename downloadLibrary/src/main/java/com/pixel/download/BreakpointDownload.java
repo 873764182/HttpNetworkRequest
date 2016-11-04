@@ -26,6 +26,7 @@ public class BreakpointDownload implements Runnable {
     private volatile RandomAccessFile currentPart = null;
     private volatile boolean canRunThread = false;
     private volatile boolean canDown = false;
+    private volatile boolean isActive = true;
     private volatile DownEntity downEntity;
 
     public BreakpointDownload(Context context, String downUrl, String savePath) {
@@ -57,7 +58,7 @@ public class BreakpointDownload implements Runnable {
     @Override
     public void run() {
         try {
-            while (canRunThread) {
+            while (canRunThread && isActive) {
                 HttpURLConnection conn = null;
                 InputStream inputStream = null;
                 byte[] buffer = null; // 缓存设置大点可以减少硬盘的读写与回调次数次数
@@ -129,7 +130,7 @@ public class BreakpointDownload implements Runnable {
 
     // 开启任务 每一次开启都会新开线程
     public synchronized void startDownload() {
-        if (canRunThread || canDown) return;
+        if (canRunThread || canDown || !isActive) return;
         canRunThread = true;
         canDown = true;
         new Thread(this).start();
@@ -137,15 +138,17 @@ public class BreakpointDownload implements Runnable {
 
     // 暂定任务 线程会被停掉
     public synchronized void suspendedDownload() {
-        canDown = false;
+        if (isActive) canDown = false;
     }
 
     public synchronized void restartDownload() {
-        canDown = true;
+        if (isActive) canDown = true;
     }
 
     // 清除下载任务 清除之后 请重新创建一个下载对象
     public synchronized void removeDownload() {
+        if (!isActive) return;
+        isActive = false;
         canRunThread = false;
         canDown = false;
         File file = new File(downEntity.getSavePath());
@@ -155,6 +158,6 @@ public class BreakpointDownload implements Runnable {
 
     // 设置回调函数
     public void setOnDownloadProgressCallback(OnDownloadProgressCallback onDownloadProgressCallback) {
-        this.onDownloadProgressCallback = onDownloadProgressCallback;
+        if (isActive) this.onDownloadProgressCallback = onDownloadProgressCallback;
     }
 }
