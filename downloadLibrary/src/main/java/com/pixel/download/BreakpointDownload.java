@@ -23,11 +23,11 @@ public class BreakpointDownload implements Runnable {
     public static final String TAG = "BreakpointDownload";
     private Context context = null;
     private OnDownloadProgressCallback onDownloadProgressCallback;
-    private volatile RandomAccessFile currentPart = null;
-    private volatile boolean canRunThread = false;
-    private volatile boolean canDown = false;
-    private volatile boolean isActive = true;
-    private volatile DownEntity downEntity;
+    private RandomAccessFile currentPart = null;
+    private DownEntity downEntity;
+    private boolean canRunThread = false;
+    private boolean canDown = false;
+    private boolean isActive = true;
 
     public BreakpointDownload(Context context, String downUrl, String savePath) {
         init(context, new DownEntity(0L, downUrl, savePath, 0L, 0L));
